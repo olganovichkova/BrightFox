@@ -17,6 +17,7 @@
     "dotenv": "8.1.0",
     "epilogue": "0.7.1",
     "express": "4.16.3",
+    "moment": "^2.27.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-router-dom": "5.1.2",
