@@ -1,3 +1,31 @@
+.time-text {
+  color: #eeeeee;
+}
+
+.card-text {
+  color: #eeeeee;
+}
+
+.time-slot-bold {
+  font-weight: 500;
+}
+
+.time-slot-opaque {
+  opacity: 35%;
+}
+
+.top-row-margin {
+  margin-top: 25px;
+}
+
+.time-slot {
+  font-size: 50px;
+  margin-right: 15px;
+  margin-left: 15px;
+  font-weight: 400;
+  border-bottom: 4px solid currentColor;
+}
+
 .row-card-wrapper {
   margin-right: -8px;
   margin-left: -8px;

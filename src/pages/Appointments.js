@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Typography, Badge } from "@material-ui/core";
+import { Typography } from "@material-ui/core";
 import axios from "axios";
 import { withAuth } from "@okta/okta-react";
 import moment from "moment";
-import { FaClock, FaMapMarkerAlt } from "react-icons/fa";
-import { groupBy } from "lodash";
+import { groupBy, sortBy } from "lodash";
 
 import CurrentTime from "../components/CurrentTime";
+import NavBar from "../components/NavBar";
+import ApptCard from "../components/ApptCard";
+///////
+import logo from "../components/logo.png";
+//////
 const API = process.env.REACT_APP_API || "http://localhost:3001";
 const getStartHour = (appt) => {
   //   {
@@ -31,19 +35,90 @@ const getStartHour = (appt) => {
   return moment(appt.start).format("h");
 };
 
+const getRoundClockHour = (nbd) => {
+  return nbd.roundClockTime;
+};
+
+const defineActive = (sortednbd, updateAT) => {
+  let now = moment().format("k");
+  if (sortednbd.length == 1) {
+    sortednbd[0].active = true;
+    updateAT(sortednbd[0].time);
+    return;
+  }
+  if (now <= sortednbd[0].roundClockTime) {
+    sortednbd[0].active = true;
+    updateAT(sortednbd[0].time);
+    return;
+  }
+  if (now >= sortednbd[sortednbd.length - 1].roundClockTime) {
+    sortednbd[sortednbd.length - 1].active = true;
+    updateAT(sortednbd[sortednbd.length - 1].time);
+    return;
+  }
+  for (let t = 0; t < sortednbd.length - 1; t++) {
+    if (
+      now >= sortednbd[t].roundClockTime &&
+      now < sortednbd[t + 1].roundClockTime
+    ) {
+      sortednbd[t].active = true;
+      updateAT(sortednbd[t].time);
+      break;
+    }
+  }
+};
+
+const getNavBarData = (gp) => {
+  let barData = [];
+  //////
+  let difference = 1440;
+  let nowHour = moment().format("h");
+  let nowPeriod = moment().format("a");
+  let closestTime = moment();
+  let active = false;
+  /////
+  for (let timeSlot in gp) {
+    let appointmentTime = gp[timeSlot][0].start;
+
+    console.log("start time =", appointmentTime);
+    let period = moment(gp[timeSlot][0].start).format("a");
+    console.log(period);
+    console.log("timeSlot = ", timeSlot);
+    let roundClockTime = moment(gp[timeSlot][0].start).format("k");
+    console.log("24 hour clock = ", roundClockTime);
+    ///////
+    let d = moment(appointmentTime).diff(closestTime, "minutes");
+    ///////
+    let result = {
+      time: timeSlot,
+      period: period,
+      active: active,
+      roundClockTime: roundClockTime,
+    };
+    barData.push(result);
+  }
+  return barData;
+};
+
 export default withAuth((props) => {
   const [init, updateInit] = useState(false);
   const [appointments, updateAppointments] = useState([]);
   const [allAppts, updateAllAppts] = useState([]);
   const [totalCount, updateTotalCount] = useState(0);
+  // const [nextUrl, updateNextUrl] = useState(
+  //   `/appointments?start_gte=${moment().format(
+  //     "YYYY-MM-DD"
+  //   )}&start_lte=${moment().add(1, "days").format("YYYY-MM-DD")}`
+  // );
   const [nextUrl, updateNextUrl] = useState(
-    `/appointments?start_gte=${moment().format(
-      "YYYY-MM-DD"
-    )}&start_lte=${moment().add(1, "days").format("YYYY-MM-DD")}`
+    `/appointments?start_gte=2020-07-17&start_lte=2020-07-18`
   );
   const [requestCount, updateRequestCount] = useState(0);
   const [startTime, updateStartTime] = useState(moment().format("h:mm"));
   const [token, updateToken] = useState("");
+  const [navBarData, updateNavBarData] = useState([]);
+  const [activeTime, updateActiveTime] = useState("");
+  const [groupAppt, updateGroupAppt] = useState({});
 
   console.log(props.auth);
 
@@ -61,8 +136,19 @@ export default withAuth((props) => {
         .then((response) => {
           updateInit(true);
           console.log(response);
+          //// grouping the appointment results by hour
           let group = groupBy(response.data.results, getStartHour);
           console.log(group);
+          updateGroupAppt(group);
+          let navBarData = getNavBarData(group);
+          console.log(navBarData);
+          let sortedNavBarData = sortBy(navBarData, getRoundClockHour);
+          console.log(sortedNavBarData);
+          //defining active time
+          defineActive(sortedNavBarData, updateActiveTime);
+
+          console.log(sortedNavBarData);
+          updateNavBarData(sortedNavBarData);
           let responseNextUrl = response.data.next;
           if (responseNextUrl != null) {
             let index = responseNextUrl.indexOf("/api/") + 4;
@@ -72,7 +158,7 @@ export default withAuth((props) => {
             //https://secure.tutorcruncher.com/api/appointments/?page=2
 
             let cnt = response.data.count;
-            if (response.data.count % 100 == 0) {
+            if (response.data.count % 100 === 0) {
               cnt = response.data.count / 100 - 1;
             } else {
               cnt = Math.floor(response.data.count / 100);
@@ -81,13 +167,21 @@ export default withAuth((props) => {
             console.log(cnt);
           }
           updateTotalCount(response.data.count);
-          updateAppointments(response.data.results);
+          console.log(group);
+          console.log(activeTime);
+          // updateAppointments(group[activeTime]);
         });
     }
     if (token) {
       fetchData();
     }
   }, [token]);
+
+  useEffect(() => {
+    if (activeTime) {
+      updateAppointments(groupAppt[activeTime]);
+    }
+  }, [activeTime, groupAppt]);
 
   useEffect(() => {
     if (init) {
@@ -122,52 +216,45 @@ export default withAuth((props) => {
     });
   }, [props.auth]);
 
-  return (
-    <Typography variant="h2">
-      <div></div>
-      <div className="container-fluid">
-        <div className="row">
-          <div className="col-sm-4"></div>
-          <div className="col-sm-4"></div>
-          <div className="col-sm-4">
-            <CurrentTime />
-          </div>
-        </div>
-        <br />
-        <div className="row">
-          <div className="col-sm-4"></div>
-          <div className="col-sm-4">
-            <h1>
-              <FaMapMarkerAlt />
-            </h1>
-          </div>
-          <div className="col-sm-4"></div>
-        </div>
-        <br />
+  const handleOnClick = (time) => {
+    updateActiveTime(time);
+  };
 
+  return (
+    <div>
+      <div className="container-fluid">
+        <Typography variant="h2">
+          <div className="row top-row-margin">
+            <div className="col-sm-4">
+              <img src={logo} alt="Logo" />
+            </div>
+            <div className="col-sm-4"></div>
+            <div className="col-sm-4 time-text">
+              <CurrentTime />
+            </div>
+          </div>
+
+          <div className="row">
+            <div className="col-sm-12">
+              <NavBar
+                data={navBarData}
+                onClick={handleOnClick}
+                activeTime={activeTime}
+              />
+            </div>
+          </div>
+          <br />
+        </Typography>
         <div className="row no-gutters row-card-wrapper">
           {appointments.map((appointment) => {
-            var start = moment(appointment.start).format("h:mm");
             return (
               <div className="col-sm-3" key={appointment.id}>
-                <div className="card person-card appt-card">
-                  <div className="card-body">
-                    <h1>{start}</h1>
-                    <h1>
-                      <FaClock />
-                    </h1>
-                    <h1>
-                      <FaMapMarkerAlt />
-                    </h1>
-                    <h4>{appointment.topic}</h4>
-                    <h2>{appointment.location}</h2>
-                  </div>
-                </div>
+                <ApptCard appointment={appointment} />
               </div>
             );
           })}
         </div>
       </div>
-    </Typography>
+    </div>
   );
 });

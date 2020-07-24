@@ -3,8 +3,6 @@ require("dotenv").config({ path: ".env.local" });
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const Sequelize = require("sequelize");
-const epilogue = require("epilogue");
 const OktaJwtVerifier = require("@okta/jwt-verifier");
 const axios = require("axios");
 
@@ -42,27 +40,48 @@ app.get("/appointments", (req, res) => {
     });
 });
 
-const database = new Sequelize({
-  dialect: "sqlite",
-  storage: "./test.sqlite",
+app.get("/appointments/:id/", (req, res) => {
+  axios
+    .get(`https://secure.tutorcruncher.com/api${req.url}`, {
+      headers: {
+        Authorization: `token ${process.env.API_AUTHORIZATION_TOKEN}`,
+      },
+    })
+    .then((response) => {
+      res.json(response.data);
+    });
 });
 
-const Post = database.define("posts", {
-  title: Sequelize.STRING,
-  body: Sequelize.TEXT,
+app.get("/public-contractors/:id/", (req, res) => {
+  console.log("in");
+  axios
+    .get(`https://secure.tutorcruncher.com/api${req.url}`, {
+      headers: {
+        Authorization: `token ${process.env.API_AUTHORIZATION_TOKEN}`,
+      },
+    })
+    .then((response) => {
+      console.log(response);
+      res.json(response.data);
+    });
 });
 
-epilogue.initialize({ app, sequelize: database });
-
-epilogue.resource({
-  model: Post,
-  endpoints: ["/posts", "/posts/:id"],
+app.get("/public-contractors", (req, res) => {
+  console.log("in");
+  axios
+    .get(`https://secure.tutorcruncher.com/api${req.url}`, {
+      headers: {
+        Authorization: `token ${process.env.API_AUTHORIZATION_TOKEN}`,
+      },
+    })
+    .then((response) => {
+      console.log(response.data);
+      res.json(response.data);
+    });
 });
 
 const port = process.env.SERVER_PORT || 3001;
 
-database.sync().then(() => {
-  app.listen(port, () => {
-    console.log(`Listening on port ${port}`);
-  });
+app.listen(port, () => {
+  console.log(`Listening on port ${port}`);
 });
