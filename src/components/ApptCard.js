@@ -5,6 +5,8 @@ import axios from "axios";
 import { withAuth } from "@okta/okta-react";
 
 import TutorPhoto from "./TutorPhoto";
+import RecipientName from "./RecipientName";
+import ContractorName from "./ContractorName";
 
 const API = process.env.REACT_APP_API || "http://localhost:3001";
 
@@ -37,7 +39,7 @@ const ApptCard = (props) => {
   return (
     <div className="card person-card appt-card">
       <div className="card-body card-text">
-        <h2>{apptDetail.rcras[0].recipient_name}</h2>
+        <RecipientName id={apptDetail.rcras[0].recipient} />
         <h3>
           <span>
             <FaMapMarkerAlt />
@@ -56,7 +58,7 @@ const ApptCard = (props) => {
               </td>
               <td>
                 <h2>
-                  <span>{apptDetail.cjas[0].name}</span>
+                  <ContractorName id={apptDetail.cjas[0].contractor} />
                 </h2>
               </td>
             </tr>

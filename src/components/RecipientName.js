@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from "react";
-import withAuth from "@okta/okta-react/dist/withAuth";
 import axios from "axios";
+import { withAuth } from "@okta/okta-react";
 
 const API = process.env.REACT_APP_API || "http://localhost:3001";
 
-const TutorPhoto = (props) => {
-  const [photoURL, updatePhotoURL] = useState(null);
+const RecipientName = (props) => {
+  const [lastName, updateLastName] = useState("");
+  const [firstName, updateFirstName] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
       let token = await props.auth.getAccessToken();
       console.log("id = ", props.id);
-      let url = `${API}/public_contractors/${props.id}`;
+      let url = `${API}/recipients/${props.id}/`;
       console.log(url);
       axios
         .get(url, {
@@ -22,24 +23,21 @@ const TutorPhoto = (props) => {
           },
         })
         .then((response) => {
-          updatePhotoURL(response.photo);
+          console.log(response);
+          updateLastName(response.data.user.last_name);
+          updateFirstName(response.data.user.first_name);
         });
     };
     fetchData();
   }, []);
-  if (photoURL == null) {
-    return (
-      <div>
-        <img className="circular" src="images/tutorSample.jpeg" />
-      </div>
-    );
-  }
-
   return (
-    <div>
-      <img className="circular" src={photoURL} />
-    </div>
+    <h2>
+      <span>{firstName}</span>
+      <span> </span>
+      <span>{lastName.substring(0, 1)}</span>
+      <span>{lastName ? "." : ""}</span>
+    </h2>
   );
 };
 
-export default withAuth(TutorPhoto);
+export default withAuth(RecipientName);

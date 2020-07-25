@@ -2,6 +2,14 @@
   color: #eeeeee;
 }
 
+.student-name {
+  font-family: Roboto;
+}
+
+.tutor-name {
+  font-family: Roboto;
+}
+
 .card-text {
   color: #eeeeee;
 }

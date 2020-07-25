@@ -52,7 +52,21 @@ app.get("/appointments/:id/", (req, res) => {
     });
 });
 
-app.get("/public-contractors/:id/", (req, res) => {
+// app.get("/public_contractors/:id/", (req, res) => {
+//   console.log("in");
+//   axios
+//     .get(`https://secure.tutorcruncher.com/api${req.url}`, {
+//       headers: {
+//         Authorization: `token ${process.env.API_AUTHORIZATION_TOKEN}`,
+//       },
+//     })
+//     .then((response) => {
+//       console.log(response);
+//       res.json(response.data);
+//     });
+// });
+
+app.get("/contractors/:id/", (req, res) => {
   console.log("in");
   axios
     .get(`https://secure.tutorcruncher.com/api${req.url}`, {
@@ -61,12 +75,12 @@ app.get("/public-contractors/:id/", (req, res) => {
       },
     })
     .then((response) => {
-      console.log(response);
+      console.log(response.data);
       res.json(response.data);
     });
 });
 
-app.get("/public-contractors", (req, res) => {
+app.get("/recipients/:id", (req, res) => {
   console.log("in");
   axios
     .get(`https://secure.tutorcruncher.com/api${req.url}`, {
