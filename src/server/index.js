@@ -52,22 +52,7 @@ app.get("/appointments/:id/", (req, res) => {
     });
 });
 
-// app.get("/public_contractors/:id/", (req, res) => {
-//   console.log("in");
-//   axios
-//     .get(`https://secure.tutorcruncher.com/api${req.url}`, {
-//       headers: {
-//         Authorization: `token ${process.env.API_AUTHORIZATION_TOKEN}`,
-//       },
-//     })
-//     .then((response) => {
-//       console.log(response);
-//       res.json(response.data);
-//     });
-// });
-
-app.get("/contractors/:id/", (req, res) => {
-  console.log("in");
+app.get("/public_contractors/", (req, res) => {
   axios
     .get(`https://secure.tutorcruncher.com/api${req.url}`, {
       headers: {
@@ -75,21 +60,50 @@ app.get("/contractors/:id/", (req, res) => {
       },
     })
     .then((response) => {
-      console.log(response.data);
+      res.json(response.data);
+    });
+});
+
+app.get("/public_contractors/:id/", (req, res) => {
+  console.log("in p_b");
+  axios
+    .get(`https://secure.tutorcruncher.com/api${req.url}`, {
+      headers: {
+        Authorization: `token ${process.env.API_AUTHORIZATION_TOKEN}`,
+      },
+    })
+    .catch((error) => {
+      console.log("in p_c catch");
+      res.json({});
+    })
+    .then((response) => {
+      res.json(response.data);
+    });
+});
+
+app.get("/contractors/:id/", (req, res) => {
+  axios
+    .get(`https://secure.tutorcruncher.com/api${req.url}`, {
+      headers: {
+        Authorization: `token ${process.env.API_AUTHORIZATION_TOKEN}`,
+      },
+    })
+    .then((response) => {
       res.json(response.data);
     });
 });
 
 app.get("/recipients/:id", (req, res) => {
-  console.log("in");
   axios
     .get(`https://secure.tutorcruncher.com/api${req.url}`, {
       headers: {
         Authorization: `token ${process.env.API_AUTHORIZATION_TOKEN}`,
       },
     })
+    .catch((error) => {
+      res.json({});
+    })
     .then((response) => {
-      console.log(response.data);
       res.json(response.data);
     });
 });

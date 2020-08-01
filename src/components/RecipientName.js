@@ -31,12 +31,12 @@ const RecipientName = (props) => {
     fetchData();
   }, []);
   return (
-    <h2>
+    <div className="student-name-font">
       <span>{firstName}</span>
       <span> </span>
       <span>{lastName.substring(0, 1)}</span>
       <span>{lastName ? "." : ""}</span>
-    </h2>
+    </div>
   );
 };
 

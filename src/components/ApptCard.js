@@ -7,6 +7,7 @@ import { withAuth } from "@okta/okta-react";
 import TutorPhoto from "./TutorPhoto";
 import RecipientName from "./RecipientName";
 import ContractorName from "./ContractorName";
+import RoomNumber from "./RoomNumber";
 
 const API = process.env.REACT_APP_API || "http://localhost:3001";
 
@@ -43,12 +44,18 @@ const ApptCard = (props) => {
         <h3>
           <span>
             <FaMapMarkerAlt />
-            Room #
+            <RoomNumber
+              className="location-time-font"
+              location={apptDetail.location}
+            />
           </span>
-          <span>
+          <span>{"  "}</span>
+          <span className="icon-margin">
             <FaClock />
           </span>
-          <span>{moment(props.appointment.start).format(" h:mma")}</span>
+          <span className="location-time-font">
+            {moment(props.appointment.start).format("h:mma")}
+          </span>
         </h3>
         <table>
           <tbody>

@@ -8,6 +8,7 @@ import { groupBy, sortBy } from "lodash";
 import CurrentTime from "../components/CurrentTime";
 import NavBar from "../components/NavBar";
 import ApptCard from "../components/ApptCard";
+import { defineActive } from "../utils/utils";
 ///////
 import logo from "../components/logo.png";
 //////
@@ -39,42 +40,9 @@ const getRoundClockHour = (nbd) => {
   return nbd.roundClockTime;
 };
 
-const defineActive = (sortednbd, updateAT) => {
-  let now = moment().format("k");
-  if (sortednbd.length == 1) {
-    sortednbd[0].active = true;
-    updateAT(sortednbd[0].time);
-    return;
-  }
-  if (now <= sortednbd[0].roundClockTime) {
-    sortednbd[0].active = true;
-    updateAT(sortednbd[0].time);
-    return;
-  }
-  if (now >= sortednbd[sortednbd.length - 1].roundClockTime) {
-    sortednbd[sortednbd.length - 1].active = true;
-    updateAT(sortednbd[sortednbd.length - 1].time);
-    return;
-  }
-  for (let t = 0; t < sortednbd.length - 1; t++) {
-    if (
-      now >= sortednbd[t].roundClockTime &&
-      now < sortednbd[t + 1].roundClockTime
-    ) {
-      sortednbd[t].active = true;
-      updateAT(sortednbd[t].time);
-      break;
-    }
-  }
-};
-
 const getNavBarData = (gp) => {
   let barData = [];
   //////
-  let difference = 1440;
-  let nowHour = moment().format("h");
-  let nowPeriod = moment().format("a");
-  let closestTime = moment();
   let active = false;
   /////
   for (let timeSlot in gp) {
@@ -87,7 +55,6 @@ const getNavBarData = (gp) => {
     let roundClockTime = moment(gp[timeSlot][0].start).format("k");
     console.log("24 hour clock = ", roundClockTime);
     ///////
-    let d = moment(appointmentTime).diff(closestTime, "minutes");
     ///////
     let result = {
       time: timeSlot,
@@ -103,7 +70,6 @@ const getNavBarData = (gp) => {
 export default withAuth((props) => {
   const [init, updateInit] = useState(false);
   const [appointments, updateAppointments] = useState([]);
-  const [allAppts, updateAllAppts] = useState([]);
   const [totalCount, updateTotalCount] = useState(0);
   // const [nextUrl, updateNextUrl] = useState(
   //   `/appointments?start_gte=${moment().format(
@@ -114,7 +80,6 @@ export default withAuth((props) => {
     `/appointments?start_gte=2020-07-17&start_lte=2020-07-18`
   );
   const [requestCount, updateRequestCount] = useState(0);
-  const [startTime, updateStartTime] = useState(moment().format("h:mm"));
   const [token, updateToken] = useState("");
   const [navBarData, updateNavBarData] = useState([]);
   const [activeTime, updateActiveTime] = useState("");
@@ -230,7 +195,10 @@ export default withAuth((props) => {
             </div>
             <div className="col-sm-4"></div>
             <div className="col-sm-4 time-text">
-              <CurrentTime />
+              <CurrentTime
+                onActiveTimeChange={updateActiveTime}
+                navBarData={navBarData}
+              />
             </div>
           </div>
 

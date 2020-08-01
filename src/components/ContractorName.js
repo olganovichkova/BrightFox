@@ -33,7 +33,7 @@ const ContractorName = (props) => {
   return (
     <h2>
       <span>{firstName}</span>
-      <span>, </span>
+      <span>{firstName ? ", " : ""}</span>
       <span>{lastName.substring(0, 1)}</span>
       <span>{lastName ? "." : ""}</span>
     </h2>
