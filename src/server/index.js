@@ -77,7 +77,8 @@ app.get("/public_contractors/:id/", (req, res) => {
       res.json({});
     })
     .then((response) => {
-      res.json(response.data);
+      if (response.data) res.json(response.data);
+      else res.json(response);
     });
 });
 
