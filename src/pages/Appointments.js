@@ -71,11 +71,6 @@ export default withAuth((props) => {
   const [init, updateInit] = useState(false);
   const [appointments, updateAppointments] = useState([]);
   const [totalCount, updateTotalCount] = useState(0);
-  // const [nextUrl, updateNextUrl] = useState(
-  //   `/appointments?start_gte=${moment().format(
-  //     "YYYY-MM-DD"
-  //   )}&start_lte=${moment().add(1, "days").format("YYYY-MM-DD")}`
-  // );
   const [nextUrl, updateNextUrl] = useState(
     `/appointments?start_gte=2020-07-17&start_lte=2020-07-18`
   );
@@ -100,25 +95,18 @@ export default withAuth((props) => {
         })
         .then((response) => {
           updateInit(true);
-          console.log(response);
           //// grouping the appointment results by hour
           let group = groupBy(response.data.results, getStartHour);
-          console.log(group);
           updateGroupAppt(group);
           let navBarData = getNavBarData(group);
-          console.log(navBarData);
           let sortedNavBarData = sortBy(navBarData, getRoundClockHour);
-          console.log(sortedNavBarData);
           //defining active time
           defineActive(sortedNavBarData, updateActiveTime);
-
-          console.log(sortedNavBarData);
           updateNavBarData(sortedNavBarData);
           let responseNextUrl = response.data.next;
           if (responseNextUrl != null) {
             let index = responseNextUrl.indexOf("/api/") + 4;
             let url = responseNextUrl.substring(index);
-            console.log("final url: ", url);
             updateNextUrl(url);
             //https://secure.tutorcruncher.com/api/appointments/?page=2
 
@@ -129,12 +117,8 @@ export default withAuth((props) => {
               cnt = Math.floor(response.data.count / 100);
             }
             updateRequestCount(cnt);
-            console.log(cnt);
           }
           updateTotalCount(response.data.count);
-          console.log(group);
-          console.log(activeTime);
-          // updateAppointments(group[activeTime]);
         });
     }
     if (token) {
