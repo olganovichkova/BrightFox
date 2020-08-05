@@ -13,7 +13,7 @@ const CurrentTime = (props) => {
   useEffect(() => {
     let interval = setInterval(function () {
       updateTime(moment().format("h:mm"));
-      //let curTime = moment().format("s").substring(0, 1);
+      // let curTime = moment().format("s").substring(0, 1);
       let curTime = moment().format("hh");
       if (prevTime != curTime) {
         updatePrevTime(curTime);

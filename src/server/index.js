@@ -108,6 +108,10 @@ app.get("/recipients/:id", (req, res) => {
     });
 });
 
+app.get("/", (req, res) => {
+  res.sendFile("index.html");
+});
+
 const port = process.env.SERVER_PORT || 3001;
 
 app.listen(port, () => {
