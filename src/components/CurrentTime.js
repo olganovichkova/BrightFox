@@ -5,12 +5,12 @@ import { defineActive } from "../utils/utils";
 
 const CurrentTime = (props) => {
   const [time, updateTime] = useState(moment().format("h:mm"));
-  const [prevTime, updatePrevTime] = useState(moment().format("mm"));
+  const [prevTime, updatePrevTime] = useState(moment().format("m"));
 
   useEffect(() => {
     setInterval(function () {
       updateTime(moment().format("h:mm"));
-      let curTime = moment().format("mm");
+      let curTime = moment().format("m");
       if (prevTime != curTime) {
         updatePrevTime(curTime);
         console.log("prevTime did not equal curTime");
