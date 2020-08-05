@@ -14,6 +14,7 @@ const oktaJwtVerifier = new OktaJwtVerifier({
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, "public")));
 
 app.use(async (req, res, next) => {
   try {
@@ -110,7 +111,7 @@ app.get("/recipients/:id", (req, res) => {
 });
 
 app.get("/", (req, res) => {
-  res.sendFile("index.html");
+  res.sendFile("index");
 });
 
 const port = process.env.SERVER_PORT || 3001;
