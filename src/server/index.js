@@ -14,7 +14,6 @@ const oktaJwtVerifier = new OktaJwtVerifier({
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, "public")));
 
 app.use(async (req, res, next) => {
   try {
