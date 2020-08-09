@@ -36,10 +36,10 @@
     "start:web": "react-scripts start",
     "start:server": "node src/server",
     "watch:server": "nodemon --watch src/server src/server",
-    "build": "react-scripts build",
+    "build": "node src/server",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "heroku-postbuild": "node src/server"
+    "heroku-postbuild": "react-scripts build"
   },
   "eslintConfig": {
     "extends": "react-app"
