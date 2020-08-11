@@ -5,6 +5,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const OktaJwtVerifier = require("@okta/jwt-verifier");
 const axios = require("axios");
+const path = require("path");
 
 const oktaJwtVerifier = new OktaJwtVerifier({
   clientId: process.env.REACT_APP_OKTA_CLIENT_ID,
@@ -12,16 +13,23 @@ const oktaJwtVerifier = new OktaJwtVerifier({
 });
 
 const app = express();
+app.use(express.static(path.join(__dirname, "../../build")));
 app.use(cors());
 app.use(bodyParser.json());
 
+app.get("/", function (req, res) {
+  res.sendFile(path.join(__dirname, "../../build", "index.html"));
+});
+
 app.use(async (req, res, next) => {
   try {
-    if (!req.headers.authorization)
-      throw new Error("Authorization header is required");
+    if (req.path != "/") {
+      if (!req.headers.authorization)
+        throw new Error("Authorization header is required");
 
-    const accessToken = req.headers.authorization.trim().split(" ")[1];
-    await oktaJwtVerifier.verifyAccessToken(accessToken, "api://default");
+      const accessToken = req.headers.authorization.trim().split(" ")[1];
+      await oktaJwtVerifier.verifyAccessToken(accessToken, "api://default");
+    }
     next();
   } catch (error) {
     next(error.message);
