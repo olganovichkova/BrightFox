@@ -17,13 +17,9 @@ app.use(express.static(path.join(__dirname, "build")));
 app.use(cors());
 app.use(bodyParser.json());
 
-app.get("/", function (req, res) {
-  res.sendFile(path.join(__dirname, "build", "index.html"));
-});
-
 app.use(async (req, res, next) => {
   try {
-    if (req.path != "/") {
+    if (req.path != "/" && req.path != "/implicit/callback") {
       if (!req.headers.authorization)
         throw new Error("Authorization header is required");
 
@@ -114,6 +110,14 @@ app.get("/recipients/:id", (req, res) => {
     .then((response) => {
       res.json(response.data);
     });
+});
+
+app.get("/", function (req, res) {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
+
+app.get("/implicit/callback", function (req, res) {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
 const port = process.env.PORT || 8080;
