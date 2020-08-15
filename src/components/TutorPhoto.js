@@ -31,7 +31,7 @@ const TutorPhoto = (props) => {
   if (photoURL == null) {
     return (
       <div>
-        <img className="circular" src="images/tutorSample.jpeg" />
+        <img className="circular" src="images/profileIcon.png" />
       </div>
     );
   }
