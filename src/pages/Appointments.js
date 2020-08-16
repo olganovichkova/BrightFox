@@ -189,6 +189,7 @@ export default withAuth((props) => {
           <div className="row">
             <div className="col-sm-12">
               <NavBar
+                init={init}
                 data={navBarData}
                 onClick={handleOnClick}
                 activeTime={activeTime}
