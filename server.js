@@ -19,7 +19,11 @@ app.use(bodyParser.json());
 
 app.use(async (req, res, next) => {
   try {
-    if (req.path != "/" && req.path != "/implicit/callback") {
+    if (
+      req.path != "/" &&
+      req.path != "/implicit/callback" &&
+      req.path != "/appts"
+    ) {
       if (!req.headers.authorization)
         throw new Error("Authorization header is required");
 
@@ -81,7 +85,11 @@ app.get("/public_contractors/:id/", (req, res) => {
       res.json({});
     })
     .then((response) => {
-      res.json(response.data);
+      if (response && response.data) {
+        res.json(response.data);
+      } else {
+        res.json({});
+      }
     });
 });
 
@@ -117,6 +125,10 @@ app.get("/", function (req, res) {
 });
 
 app.get("/implicit/callback", function (req, res) {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
+
+app.get("/appts", function (req, res) {
   res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 

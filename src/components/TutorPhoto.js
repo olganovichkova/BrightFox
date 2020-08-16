@@ -22,8 +22,10 @@ const TutorPhoto = (props) => {
           },
         })
         .then((response) => {
-          console.log("photo = ", response.data);
-          updatePhotoURL(response.data.photo);
+          if (response && response.data && response.data.photo) {
+            console.log("photo = ", response.data);
+            updatePhotoURL(response.data.photo);
+          }
         });
     };
     fetchData();

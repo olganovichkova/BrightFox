@@ -7,7 +7,7 @@ import React from "react";
 //   };
 const NavBar = (props) => {
   return (
-    <div className="text-center">
+    <div className="text-center nav-bar">
       {props.data.map((timeSlot) => {
         return (
           <span

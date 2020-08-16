@@ -3,16 +3,20 @@ import { FaClock, FaMapMarkerAlt } from "react-icons/fa";
 import moment from "moment";
 import axios from "axios";
 import { withAuth } from "@okta/okta-react";
+import Skeleton from "react-loading";
 
 import TutorPhoto from "./TutorPhoto";
 import RecipientName from "./RecipientName";
 import ContractorName from "./ContractorName";
 import RoomNumber from "./RoomNumber";
 
-const API = process.env.REACT_APP_API || "http://localhost:3001";
+const API = process.env.REACT_APP_API || "http://localhost:8080";
 
 const ApptCard = (props) => {
   const [apptDetail, updateApptDetail] = useState({});
+  const [isApptFetching, updateIsApptFetching] = useState(true);
+  const [isStudentFetching, updateIsStudentFetching] = useState(true);
+  const [isContractorFetching, updateIsContractorFetching] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,20 +46,22 @@ const ApptCard = (props) => {
       <div className="card-body card-text">
         <RecipientName id={apptDetail.rcras[0].recipient} />
         <h3>
-          <span>
-            <FaMapMarkerAlt />
-            <RoomNumber
-              className="location-time-font"
-              location={apptDetail.location}
-            />
-          </span>
-          <span>{"  "}</span>
-          <span className="icon-margin">
-            <FaClock />
-          </span>
-          <span className="location-time-font">
-            {moment(props.appointment.start).format("h:mma")}
-          </span>
+          <div className="detail-spacing">
+            <span>
+              <FaMapMarkerAlt />
+              <RoomNumber
+                className="location-time-font"
+                location={apptDetail.location}
+              />
+            </span>
+            <span>{"  "}</span>
+            <span className="icon-margin">
+              <FaClock />
+            </span>
+            <span className="location-time-font">
+              {moment(props.appointment.start).format("h:mma")}
+            </span>
+          </div>
         </h3>
         <table>
           <tbody>
