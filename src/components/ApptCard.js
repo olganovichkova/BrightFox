@@ -50,7 +50,9 @@ const ApptCard = (props) => {
   return (
     <div className="card person-card appt-card">
       <div className="card-body card-text">
+        {/* {apptDetail && apptDetail.rcas.length > 0 && apptDetail.rcas[0] && ( */}
         <RecipientName id={apptDetail.rcras[0].recipient} />
+        {/* )} */}
         <h3>
           <div className="detail-spacing">
             <span>
