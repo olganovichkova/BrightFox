@@ -6,8 +6,25 @@ import React from "react";
 //     roundClockTime: roundClockTime,
 //   };
 const NavBar = (props) => {
+  if (!props.init) {
+    return (
+      <div class="d-flex justify-content-center">
+        <div class="spinner-border" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+    );
+  }
+  if (props.init && props.data.length == 0) {
+    return (
+      <div className="text-center">
+        <h1> No appointments for today,</h1>
+        <h1> check in tomorrow! </h1>
+      </div>
+    );
+  }
   return (
-    <div className="text-center">
+    <div className="text-center nav-bar">
       {props.data.map((timeSlot) => {
         return (
           <span

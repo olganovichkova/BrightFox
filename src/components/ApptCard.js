@@ -3,16 +3,20 @@ import { FaClock, FaMapMarkerAlt } from "react-icons/fa";
 import moment from "moment";
 import axios from "axios";
 import { withAuth } from "@okta/okta-react";
+import Skeleton from "react-loading";
 
 import TutorPhoto from "./TutorPhoto";
 import RecipientName from "./RecipientName";
 import ContractorName from "./ContractorName";
 import RoomNumber from "./RoomNumber";
 
-const API = process.env.REACT_APP_API || "http://localhost:3001";
+const API = process.env.REACT_APP_API || "http://localhost:8080";
 
 const ApptCard = (props) => {
   const [apptDetail, updateApptDetail] = useState({});
+  const [isApptFetching, updateIsApptFetching] = useState(true);
+  const [isStudentFetching, updateIsStudentFetching] = useState(true);
+  const [isContractorFetching, updateIsContractorFetching] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,27 +39,37 @@ const ApptCard = (props) => {
     fetchData();
   }, []);
   if (!apptDetail.id) {
-    return <div></div>;
+    return (
+      <div class="d-flex justify-content-center">
+        <div class="spinner-border" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+    );
   }
   return (
     <div className="card person-card appt-card">
       <div className="card-body card-text">
+        {/* {apptDetail && apptDetail.rcas.length > 0 && apptDetail.rcas[0] && ( */}
         <RecipientName id={apptDetail.rcras[0].recipient} />
+        {/* )} */}
         <h3>
-          <span>
-            <FaMapMarkerAlt />
-            <RoomNumber
-              className="location-time-font"
-              location={apptDetail.location}
-            />
-          </span>
-          <span>{"  "}</span>
-          <span className="icon-margin">
-            <FaClock />
-          </span>
-          <span className="location-time-font">
-            {moment(props.appointment.start).format("h:mma")}
-          </span>
+          <div className="detail-spacing">
+            <span>
+              <FaMapMarkerAlt />
+              <RoomNumber
+                className="location-time-font"
+                location={apptDetail.location}
+              />
+            </span>
+            <span>{"  "}</span>
+            <span className="icon-margin">
+              <FaClock />
+            </span>
+            <span className="location-time-font">
+              {moment(props.appointment.start).format("h:mma")}
+            </span>
+          </div>
         </h3>
         <table>
           <tbody>

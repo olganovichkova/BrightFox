@@ -12,7 +12,7 @@ import { defineActive } from "../utils/utils";
 ///////
 import logo from "../components/logo.png";
 //////
-const API = process.env.REACT_APP_API || "http://localhost:3001";
+const API = process.env.REACT_APP_API || "http://localhost:8080";
 const getStartHour = (appt) => {
   //   {
   //     "id":3292034,
@@ -72,7 +72,9 @@ export default withAuth((props) => {
   const [appointments, updateAppointments] = useState([]);
   const [totalCount, updateTotalCount] = useState(0);
   const [nextUrl, updateNextUrl] = useState(
-    `/appointments?start_gte=2020-07-17&start_lte=2020-07-18`
+    `/appointments?start_gte=${moment().format(
+      "YYYY-MM-DD"
+    )}&start_lte=${moment().add(1, "day").format("YYYY-MM-DD")}`
   );
   const [requestCount, updateRequestCount] = useState(0);
   const [token, updateToken] = useState("");
@@ -127,10 +129,10 @@ export default withAuth((props) => {
   }, [token]);
 
   useEffect(() => {
-    if (activeTime) {
+    if (activeTime && init) {
       updateAppointments(groupAppt[activeTime]);
     }
-  }, [activeTime, groupAppt]);
+  }, [activeTime, init, groupAppt]);
 
   useEffect(() => {
     if (init) {
@@ -189,6 +191,7 @@ export default withAuth((props) => {
           <div className="row">
             <div className="col-sm-12">
               <NavBar
+                init={init}
                 data={navBarData}
                 onClick={handleOnClick}
                 activeTime={activeTime}

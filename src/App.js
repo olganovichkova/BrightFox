@@ -5,6 +5,7 @@ import { CssBaseline, withStyles } from "@material-ui/core";
 
 import AppHeader from "./components/AppHeader";
 import Appointments from "./pages/Appointments";
+import WelcomePage from "./pages/WelcomePage";
 
 const styles = (theme) => ({
   main: {
@@ -31,8 +32,9 @@ const App = (props) => {
       <CssBaseline />
       <AppHeader />
       <main>
-        <SecureRoute path="/appointments" component={Appointments} />
-        {isAuthenticated ? <Redirect to={{ pathname: "/appointments" }} /> : ""}
+        {!isAuthenticated ? <Route path="/" component={WelcomePage} /> : ""}
+        <SecureRoute path="/appts" component={Appointments} />
+        {isAuthenticated ? <Redirect to={{ pathname: "/appts" }} /> : ""}
         <Route path="/implicit/callback" component={ImplicitCallback} />
       </main>
     </Fragment>

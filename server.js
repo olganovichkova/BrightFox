@@ -13,17 +13,17 @@ const oktaJwtVerifier = new OktaJwtVerifier({
 });
 
 const app = express();
-app.use(express.static(path.join(__dirname, "../../build")));
+app.use(express.static(path.join(__dirname, "build")));
 app.use(cors());
 app.use(bodyParser.json());
 
-app.get("/", function (req, res) {
-  res.sendFile(path.join(__dirname, "../../build", "index.html"));
-});
-
 app.use(async (req, res, next) => {
   try {
-    if (req.path != "/") {
+    if (
+      req.path != "/" &&
+      req.path != "/implicit/callback" &&
+      req.path != "/appts"
+    ) {
       if (!req.headers.authorization)
         throw new Error("Authorization header is required");
 
@@ -85,8 +85,11 @@ app.get("/public_contractors/:id/", (req, res) => {
       res.json({});
     })
     .then((response) => {
-      if (response.data) res.json(response.data);
-      else res.json(response);
+      if (response && response.data) {
+        res.json(response.data);
+      } else {
+        res.json({});
+      }
     });
 });
 
@@ -117,10 +120,20 @@ app.get("/recipients/:id", (req, res) => {
     });
 });
 
-const port = process.env.SERVER_PORT || 3001;
+app.get("/", function (req, res) {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
+
+app.get("/implicit/callback", function (req, res) {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
+
+app.get("/appts", function (req, res) {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
+
+const port = process.env.PORT || 8080;
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
-
-//

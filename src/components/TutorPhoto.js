@@ -22,8 +22,10 @@ const TutorPhoto = (props) => {
           },
         })
         .then((response) => {
-          console.log("photo = ", response.data);
-          updatePhotoURL(response.data.photo);
+          if (response && response.data && response.data.photo) {
+            console.log("photo = ", response.data);
+            updatePhotoURL(response.data.photo);
+          }
         });
     };
     fetchData();
@@ -31,7 +33,7 @@ const TutorPhoto = (props) => {
   if (photoURL == null) {
     return (
       <div>
-        <img className="circular" src="images/tutorSample.jpeg" />
+        <img className="circular" src="images/profileIcon.png" />
       </div>
     );
   }
