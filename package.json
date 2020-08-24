@@ -39,6 +39,7 @@
     "start:server": "node server.js",
     "watch:server": "nodemon --watch src/server src/server",
     "test": "react-scripts test --env=jsdom",
+    "build": "react-scripts build",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
