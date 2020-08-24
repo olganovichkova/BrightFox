@@ -1,37 +1,48 @@
 import moment from "moment";
+import { groupBy, sortBy } from "lodash";
 
-export const defineActive = (sortednbd, updateAT) => {
+export const getNavBarData = (todayAppointments) => {
+  let gp = groupBy(todayAppointments, (apt) => apt.start24);
+  let barData = [];
+  //////
+  let active = false;
+  /////
+  for (let timeSlot in gp) {
+    //let appointmentTime = gp[timeSlot][0].start;
+    let hour = moment(gp[timeSlot][0].start).format("h");
+    let period = moment(gp[timeSlot][0].start).format("a");
+    let roundClockTime = moment(gp[timeSlot][0].start).format("k");
+    ///////
+    ///////
+    let result = {
+      time: timeSlot,
+      hour: hour,
+      period: period,
+      active: active,
+      roundClockTime: roundClockTime,
+    };
+    barData.push(result);
+  }
+  sortBy(barData, (d) => d.timeslot);
+  return barData;
+};
+
+export const getActiveTime = (navBarData) => {
   let now = moment().format("k");
-  //   for(slot = 0; slot < sortednbd.length; slot++){
-  //   let roundClockTime = sortednbd[slot].
-  //   }
-  console.log(sortednbd);
-  if (sortednbd.length == 1) {
-    sortednbd[0].active = true;
-    updateAT(sortednbd[0].time);
-    return;
+  let minActiveTime = navBarData[0].time;
+  let maxActiveTime = navBarData[navBarData.length - 1].time;
+  if (navBarData.length === 1) {
+    return minActiveTime;
   }
-  if (sortednbd.length > 0 && now <= sortednbd[0].roundClockTime) {
-    sortednbd[0].active = true;
-    updateAT(sortednbd[0].time);
-    return;
+  if (now <= Number(minActiveTime)) {
+    return minActiveTime;
   }
-  if (
-    sortednbd.length > 0 &&
-    now >= sortednbd[sortednbd.length - 1].roundClockTime
-  ) {
-    sortednbd[sortednbd.length - 1].active = true;
-    updateAT(sortednbd[sortednbd.length - 1].time);
-    return;
+  if (now >= Number(maxActiveTime)) {
+    return maxActiveTime;
   }
-  for (let t = 0; t < sortednbd.length - 1; t++) {
-    if (
-      now >= sortednbd[t].roundClockTime &&
-      now < sortednbd[t + 1].roundClockTime
-    ) {
-      sortednbd[t].active = true;
-      updateAT(sortednbd[t].time);
-      break;
+  for (let i = 0; i < navBarData.length - 1; i++) {
+    if (now > Number(navBarData[i]) && now <= Number(navBarData[i + 1])) {
+      return navBarData[i];
     }
   }
 };

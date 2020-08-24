@@ -1,73 +1,27 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { FaClock, FaMapMarkerAlt } from "react-icons/fa";
 import moment from "moment";
-import axios from "axios";
-import { withAuth } from "@okta/okta-react";
-import Skeleton from "react-loading";
 
 import TutorPhoto from "./TutorPhoto";
-import RecipientName from "./RecipientName";
-import ContractorName from "./ContractorName";
 import RoomNumber from "./RoomNumber";
 
-const API = process.env.REACT_APP_API || "http://localhost:8080";
-
-const ApptCard = (props) => {
-  const [apptDetail, updateApptDetail] = useState({});
-  const [isApptFetching, updateIsApptFetching] = useState(true);
-  const [isStudentFetching, updateIsStudentFetching] = useState(true);
-  const [isContractorFetching, updateIsContractorFetching] = useState(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      let token = await props.auth.getAccessToken();
-      console.log("id = ", props.appointment.id);
-      let url = `${API}/appointments/${props.appointment.id}/`;
-      console.log(url);
-      axios
-        .get(url, {
-          headers: {
-            "content-type": "application/json",
-            accept: "application/json",
-            authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          updateApptDetail(response.data);
-        });
-    };
-    fetchData();
-  }, []);
-  if (!apptDetail.id) {
-    return (
-      <div class="d-flex justify-content-center">
-        <div class="spinner-border" role="status">
-          <span class="sr-only">Loading...</span>
-        </div>
-      </div>
-    );
-  }
+const ApptCard = ({ id, location, start, studentName, tutorName, photo }) => {
   return (
     <div className="card person-card appt-card">
       <div className="card-body card-text">
-        {/* {apptDetail && apptDetail.rcas.length > 0 && apptDetail.rcas[0] && ( */}
-        <RecipientName id={apptDetail.rcras[0].recipient} />
-        {/* )} */}
+        <div className="student-name-font">{studentName}</div>
         <h3>
           <div className="detail-spacing">
             <span>
               <FaMapMarkerAlt />
-              <RoomNumber
-                className="location-time-font"
-                location={apptDetail.location}
-              />
+              <RoomNumber className="location-time-font" location={location} />
             </span>
             <span>{"  "}</span>
             <span className="icon-margin">
               <FaClock />
             </span>
             <span className="location-time-font">
-              {moment(props.appointment.start).format("h:mma")}
+              {moment(start).format("h:mma")}
             </span>
           </div>
         </h3>
@@ -75,12 +29,12 @@ const ApptCard = (props) => {
           <tbody>
             <tr>
               <td>
-                <TutorPhoto id={apptDetail.cjas[0].contractor} />
+                <TutorPhoto photo={photo} />
               </td>
               <td>
-                <h2>
-                  <ContractorName id={apptDetail.cjas[0].contractor} />
-                </h2>
+                <div>
+                  <h2>{tutorName}</h2>
+                </div>
               </td>
             </tr>
           </tbody>
@@ -90,33 +44,14 @@ const ApptCard = (props) => {
   );
 };
 
-export default withAuth(ApptCard);
+export default ApptCard;
 // {
-//     "id": 10,
-//     "start": "2020-01-01T12:00:00Z",
-//     "finish": "2020-01-01T13:00:00Z",
-//     "units": "1.00000",
-//     "topic": "Lesson 1",
-//     "location": null,
-//     "rcras": [
-//       {
-//         "recipient": 23,
-//         "recipient_name": "Archie Hoskins", <<<<< student name
-//         "paying_client": 18,
-//         "paying_client_name": "Jamie Hoskins",
-//         "charge_rate": "100.00"
-//       }
-//     ],
-//     "cjas": [
-//       {
-//         "contractor": 43,
-//         "contractor_name": "Billy Holiday", <<<<<< tutor name
-//         "pay_rate": "80.00"
-//       }
-//     ],
-//     "status": "Planned",
-//     "repeater": null,
-//     "service_id": 2,
-//     "service_name": "Maths GCSE",
-//     "charge_type": "Hourly"
-//   }
+//   id: 3487460,
+//   location: null,
+//   start: '2020-08-25T01:00:00+02:00',
+//   start24: '16',
+//   startAmPm: '4pm',
+//   studentName: 'Enoch Duong',
+//   tutorName: 'Jason Michel',
+//   photo: null
+// },

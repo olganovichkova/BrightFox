@@ -1,48 +1,19 @@
-import React, { useState, useEffect } from "react";
-import withAuth from "@okta/okta-react/dist/withAuth";
-import axios from "axios";
+import React from "react";
 
-const API = process.env.REACT_APP_API || "http://localhost:3001";
-
-const TutorPhoto = (props) => {
-  const [photoURL, updatePhotoURL] = useState(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      let token = await props.auth.getAccessToken();
-      console.log("id = ", props.id);
-      let url = `${API}/public_contractors/${props.id}`;
-      console.log(url);
-      axios
-        .get(url, {
-          headers: {
-            "content-type": "application/json",
-            accept: "application/json",
-            authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          if (response && response.data && response.data.photo) {
-            console.log("photo = ", response.data);
-            updatePhotoURL(response.data.photo);
-          }
-        });
-    };
-    fetchData();
-  }, []);
-  if (photoURL == null) {
+const TutorPhoto = ({ photo }) => {
+  if (photo == null) {
     return (
       <div>
-        <img className="circular" src="images/profileIcon.png" />
+        <img className="circular" src="images/profileIcon.png" alt="Tutor" />
       </div>
     );
   }
 
   return (
     <div>
-      <img className="circular" src={photoURL} />
+      <img className="circular" src={photo} alt="Tutor" />
     </div>
   );
 };
 
-export default withAuth(TutorPhoto);
+export default TutorPhoto;

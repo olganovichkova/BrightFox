@@ -21,7 +21,7 @@ const App = (props) => {
   useEffect(() => {
     async function getAuthenticated() {
       const authenticated = await props.auth.isAuthenticated();
-      if (authenticated != isAuthenticated) {
+      if (authenticated !== isAuthenticated) {
         updateIsAuthenticated(authenticated);
       }
     }

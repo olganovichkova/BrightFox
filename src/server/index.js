@@ -85,7 +85,8 @@ app.get("/public_contractors/:id/", (req, res) => {
       res.json({});
     })
     .then((response) => {
-      res.json(response.data);
+      if (response.data) res.json(response.data);
+      else res.json(response);
     });
 });
 
@@ -114,10 +115,6 @@ app.get("/recipients/:id", (req, res) => {
     .then((response) => {
       res.json(response.data);
     });
-});
-
-app.get("/", (req, res) => {
-  res.sendFile("index.html");
 });
 
 const port = process.env.SERVER_PORT || 3001;
