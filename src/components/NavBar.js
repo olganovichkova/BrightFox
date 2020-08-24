@@ -37,7 +37,7 @@ const NavBar = (props) => {
             onClick={() => {
               props.onClick(timeSlot.time);
             }}
-          >{`${timeSlot.time}${timeSlot.period}`}</span>
+          >{`${timeSlot.hour}${timeSlot.period}`}</span>
         );
       })}
     </div>

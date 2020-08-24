@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
 
-import { defineActive } from "../utils/utils";
-
 const useAudio = (url) => {
   const [audio] = useState(new Audio(url));
   const [playing, setPlaying] = useState(false);
@@ -23,7 +21,7 @@ const useAudio = (url) => {
   return [playing, toggle];
 };
 
-const CurrentTime = (props) => {
+const CurrentTime = ({ onTimeChange }) => {
   const [time, updateTime] = useState(moment().format("h:mm"));
   // const [prevTime, updatePrevTime] = useState(
   //   moment().format("s").substring(0, 1)
@@ -38,6 +36,7 @@ const CurrentTime = (props) => {
       let curTime = moment().format("hh");
       if (prevTime !== curTime) {
         updatePrevTime(curTime);
+        onTimeChange();
         toggle();
         console.log("prevTime did not equal curTime");
       }
@@ -45,14 +44,7 @@ const CurrentTime = (props) => {
     return () => {
       clearInterval(interval);
     };
-  }, [prevTime, playing, toggle]);
-
-  useEffect(() => {
-    defineActive(props.navBarData, props.onActiveTimeChange);
-    return () => {
-      defineActive({}, null);
-    };
-  }, [props.navBarData, props.onActiveTimeChange, prevTime]);
+  }, [prevTime, playing, toggle, onTimeChange]);
 
   return (
     <div>
