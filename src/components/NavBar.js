@@ -6,7 +6,7 @@ import React from "react";
 //     roundClockTime: roundClockTime,
 //   };
 const NavBar = (props) => {
-  if (!props.init) {
+  if (!props.init && props.data.length === 0) {
     return (
       <div className="d-flex justify-content-center">
         <div className="spinner-border" role="status">
