@@ -32,7 +32,6 @@ const getStartHour = (appt) => {
   //     },
   //     "url":"https://secure.tutorcruncher.com/api/appointments/3292034/"
   //  }
-  console.log(moment(appt.start).format("h"));
   return moment(appt.start).format("h");
 };
 
@@ -46,14 +45,9 @@ const getNavBarData = (gp) => {
   let active = false;
   /////
   for (let timeSlot in gp) {
-    let appointmentTime = gp[timeSlot][0].start;
-
-    console.log("start time =", appointmentTime);
+    //let appointmentTime = gp[timeSlot][0].start;
     let period = moment(gp[timeSlot][0].start).format("a");
-    console.log(period);
-    console.log("timeSlot = ", timeSlot);
     let roundClockTime = moment(gp[timeSlot][0].start).format("k");
-    console.log("24 hour clock = ", roundClockTime);
     ///////
     ///////
     let result = {
@@ -70,23 +64,18 @@ const getNavBarData = (gp) => {
 export default withAuth((props) => {
   const [init, updateInit] = useState(false);
   const [appointments, updateAppointments] = useState([]);
-  const [totalCount, updateTotalCount] = useState(0);
-  const [nextUrl, updateNextUrl] = useState(
+  const [nextUrl] = useState(
     `/appointments?start_gte=${moment().format(
       "YYYY-MM-DD"
     )}&start_lte=${moment().add(1, "day").format("YYYY-MM-DD")}`
   );
-  const [requestCount, updateRequestCount] = useState(0);
-  const [token, updateToken] = useState("");
   const [navBarData, updateNavBarData] = useState([]);
   const [activeTime, updateActiveTime] = useState("");
   const [groupAppt, updateGroupAppt] = useState({});
 
-  console.log(props.auth);
-
   useEffect(() => {
-    function fetchData() {
-      // const token = await props.auth.getAccessToken();
+    async function fetchData() {
+      let token = await props.auth.getAccessToken();
       axios
         .get(`${API}${nextUrl}`, {
           headers: {
@@ -105,67 +94,16 @@ export default withAuth((props) => {
           //defining active time
           defineActive(sortedNavBarData, updateActiveTime);
           updateNavBarData(sortedNavBarData);
-          let responseNextUrl = response.data.next;
-          if (responseNextUrl != null) {
-            let index = responseNextUrl.indexOf("/api/") + 4;
-            let url = responseNextUrl.substring(index);
-            updateNextUrl(url);
-            //https://secure.tutorcruncher.com/api/appointments/?page=2
-
-            let cnt = response.data.count;
-            if (response.data.count % 100 === 0) {
-              cnt = response.data.count / 100 - 1;
-            } else {
-              cnt = Math.floor(response.data.count / 100);
-            }
-            updateRequestCount(cnt);
-          }
-          updateTotalCount(response.data.count);
         });
     }
-    if (token) {
-      fetchData();
-    }
-  }, [token]);
+    fetchData();
+  }, [nextUrl, props.auth]);
 
   useEffect(() => {
     if (activeTime && init) {
       updateAppointments(groupAppt[activeTime]);
     }
   }, [activeTime, init, groupAppt]);
-
-  useEffect(() => {
-    if (init) {
-      function fetchData() {
-        // You can await here
-        // const token = await props.auth.getAccessToken();
-        // ...
-        let requests = [];
-        console.log(requests);
-        for (let i = 0; i < requestCount - 1; i++) {
-          requests.push(
-            axios.get(`${API}/appointments/?page=${i + 2}`, {
-              headers: {
-                "content-type": "application/json",
-                accept: "application/json",
-                authorization: `Bearer ${token}`,
-              },
-            })
-          );
-        }
-        axios.all(requests).then((...responses) => {
-          console.log(responses);
-        });
-      }
-      fetchData();
-    }
-  }, [token]);
-
-  useEffect(() => {
-    props.auth.getAccessToken().then((token) => {
-      updateToken(token);
-    });
-  }, [props.auth]);
 
   const handleOnClick = (time) => {
     updateActiveTime(time);

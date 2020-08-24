@@ -8,14 +8,14 @@ import React from "react";
 const NavBar = (props) => {
   if (!props.init) {
     return (
-      <div class="d-flex justify-content-center">
-        <div class="spinner-border" role="status">
-          <span class="sr-only">Loading...</span>
+      <div className="d-flex justify-content-center">
+        <div className="spinner-border" role="status">
+          <span className="sr-only">Loading...</span>
         </div>
       </div>
     );
   }
-  if (props.init && props.data.length == 0) {
+  if (props.init && props.data.length === 0) {
     return (
       <div className="text-center">
         <h1> No appointments for today,</h1>
@@ -30,7 +30,7 @@ const NavBar = (props) => {
           <span
             key={timeSlot.time}
             className={`time-slot ${
-              props.activeTime == timeSlot.time
+              props.activeTime === timeSlot.time
                 ? "time-slot-bold"
                 : "time-slot-opaque"
             }`}

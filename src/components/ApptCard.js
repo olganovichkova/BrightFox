@@ -3,7 +3,6 @@ import { FaClock, FaMapMarkerAlt } from "react-icons/fa";
 import moment from "moment";
 import axios from "axios";
 import { withAuth } from "@okta/okta-react";
-import Skeleton from "react-loading";
 
 import TutorPhoto from "./TutorPhoto";
 import RecipientName from "./RecipientName";
@@ -14,13 +13,14 @@ const API = process.env.REACT_APP_API || "http://localhost:8080";
 
 const ApptCard = (props) => {
   const [apptDetail, updateApptDetail] = useState({});
-  const [isApptFetching, updateIsApptFetching] = useState(true);
-  const [isStudentFetching, updateIsStudentFetching] = useState(true);
-  const [isContractorFetching, updateIsContractorFetching] = useState(true);
 
   useEffect(() => {
+    let isSubscribed = true;
     const fetchData = async () => {
       let token = await props.auth.getAccessToken();
+      if (!token) {
+        window.location.reload(true);
+      }
       console.log("id = ", props.appointment.id);
       let url = `${API}/appointments/${props.appointment.id}/`;
       console.log(url);
@@ -33,16 +33,26 @@ const ApptCard = (props) => {
           },
         })
         .then((response) => {
-          updateApptDetail(response.data);
+          if (isSubscribed && response && response.data)
+            updateApptDetail(response.data);
         });
     };
     fetchData();
-  }, []);
+    return () => (isSubscribed = false);
+  }, [props.appointment.id, props.auth]);
+
   if (!apptDetail.id) {
     return (
-      <div class="d-flex justify-content-center">
-        <div class="spinner-border" role="status">
-          <span class="sr-only">Loading...</span>
+      <div className="card person-card appt-card">
+        <div className="card-body card-text">
+          <div
+            className="d-flex justify-content-center"
+            style={{ paddingTop: "65px" }}
+          >
+            <div className="spinner-border" role="status">
+              <span className="sr-only">Loading...</span>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -50,9 +60,11 @@ const ApptCard = (props) => {
   return (
     <div className="card person-card appt-card">
       <div className="card-body card-text">
-        {/* {apptDetail && apptDetail.rcas.length > 0 && apptDetail.rcas[0] && ( */}
-        <RecipientName id={apptDetail.rcras[0].recipient} />
-        {/* )} */}
+        {apptDetail && apptDetail.rcras && apptDetail.rcras.length > 0 ? (
+          <RecipientName id={apptDetail.rcras[0].recipient} />
+        ) : (
+          <div className="student-name-font">{apptDetail.topic}</div>
+        )}
         <h3>
           <div className="detail-spacing">
             <span>
@@ -71,20 +83,22 @@ const ApptCard = (props) => {
             </span>
           </div>
         </h3>
-        <table>
-          <tbody>
-            <tr>
-              <td>
-                <TutorPhoto id={apptDetail.cjas[0].contractor} />
-              </td>
-              <td>
-                <h2>
-                  <ContractorName id={apptDetail.cjas[0].contractor} />
-                </h2>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        {apptDetail && apptDetail.cjas && apptDetail.cjas.length > 0 && (
+          <table>
+            <tbody>
+              <tr>
+                <td>
+                  <TutorPhoto id={apptDetail.cjas[0].contractor} />
+                </td>
+                <td>
+                  <div>
+                    <ContractorName id={apptDetail.cjas[0].contractor} />
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );

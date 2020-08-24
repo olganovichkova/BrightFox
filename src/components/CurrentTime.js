@@ -15,7 +15,7 @@ const CurrentTime = (props) => {
       updateTime(moment().format("h:mm"));
       // let curTime = moment().format("s").substring(0, 1);
       let curTime = moment().format("hh");
-      if (prevTime != curTime) {
+      if (prevTime !== curTime) {
         updatePrevTime(curTime);
         console.log("prevTime did not equal curTime");
       }
@@ -23,11 +23,14 @@ const CurrentTime = (props) => {
     return () => {
       clearInterval(interval);
     };
-  }, []);
+  }, [prevTime]);
 
   useEffect(() => {
     defineActive(props.navBarData, props.onActiveTimeChange);
-  }, [prevTime]);
+    return () => {
+      defineActive({}, null);
+    };
+  }, [props.navBarData, props.onActiveTimeChange, prevTime]);
 
   return (
     <span className="badge badge-pill badge-custom float-right">{time}</span>

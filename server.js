@@ -43,8 +43,11 @@ app.get("/appointments", (req, res) => {
         Authorization: `token ${process.env.API_AUTHORIZATION_TOKEN}`,
       },
     })
+    .catch((error) => {
+      //res.json({});
+    })
     .then((response) => {
-      res.json(response.data);
+      if (response && response.data) res.json(response.data);
     });
 });
 
@@ -55,8 +58,11 @@ app.get("/appointments/:id/", (req, res) => {
         Authorization: `token ${process.env.API_AUTHORIZATION_TOKEN}`,
       },
     })
+    .catch((error) => {
+      //res.json({});
+    })
     .then((response) => {
-      res.json(response.data);
+      if (response && response.data) res.json(response.data);
     });
 });
 
@@ -67,8 +73,11 @@ app.get("/public_contractors/", (req, res) => {
         Authorization: `token ${process.env.API_AUTHORIZATION_TOKEN}`,
       },
     })
+    .catch((error) => {
+      //res.json({});
+    })
     .then((response) => {
-      res.json(response.data);
+      if (response && response.data) res.json(response.data);
     });
 });
 
@@ -82,13 +91,11 @@ app.get("/public_contractors/:id/", (req, res) => {
     })
     .catch((error) => {
       console.log("in p_c catch");
-      res.json({});
+      //res.json({ error: "error" });
     })
     .then((response) => {
       if (response && response.data) {
         res.json(response.data);
-      } else {
-        res.json({});
       }
     });
 });
@@ -100,8 +107,11 @@ app.get("/contractors/:id/", (req, res) => {
         Authorization: `token ${process.env.API_AUTHORIZATION_TOKEN}`,
       },
     })
+    .catch((error) => {
+      //res.json({});
+    })
     .then((response) => {
-      res.json(response.data);
+      if (response && response.data) res.json(response.data);
     });
 });
 
@@ -113,10 +123,10 @@ app.get("/recipients/:id", (req, res) => {
       },
     })
     .catch((error) => {
-      res.json({});
+      //res.json({});
     })
     .then((response) => {
-      res.json(response.data);
+      if (response && response.data) res.json(response.data);
     });
 });
 
