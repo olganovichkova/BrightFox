@@ -14,6 +14,10 @@
 .student-name-font {
   font-weight: 600;
   font-size: 2.8em;
+  max-width: 250px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .location-time-font {
@@ -32,7 +36,10 @@
 }
 
 .tutor-name {
-  font-family: Roboto;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .card-text {

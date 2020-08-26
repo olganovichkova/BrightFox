@@ -28,6 +28,7 @@ export const getNavBarData = (todayAppointments) => {
 };
 
 export const getActiveTime = (navBarData) => {
+  console.log("navBarData : ", navBarData);
   let now = moment().format("k");
   let minActiveTime = navBarData[0].time;
   let maxActiveTime = navBarData[navBarData.length - 1].time;

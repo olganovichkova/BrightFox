@@ -33,7 +33,9 @@ const ApptCard = ({ id, location, start, studentName, tutorName, photo }) => {
               </td>
               <td>
                 <div>
-                  <h2>{tutorName}</h2>
+                  <h2>
+                    <div className="tutor-name">{tutorName}</div>
+                  </h2>
                 </div>
               </td>
             </tr>
