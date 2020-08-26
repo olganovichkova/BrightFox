@@ -95,7 +95,10 @@ export default withAuth((props) => {
         </Typography>
         <div className="row no-gutters row-card-wrapper">
           {appointments
-            .filter((appointement) => appointement.start24 === activeTime)
+            .filter(
+              (appointement) =>
+                moment(appointement.start).format("k") === activeTime
+            )
             .map((appointment) => {
               return (
                 <div className="col-sm-3" key={appointment.id}>

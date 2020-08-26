@@ -2,7 +2,7 @@ import moment from "moment";
 import { groupBy, sortBy } from "lodash";
 
 export const getNavBarData = (todayAppointments) => {
-  let gp = groupBy(todayAppointments, (apt) => apt.start24);
+  let gp = groupBy(todayAppointments, (apt) => moment(apt.start).format("k"));
   let barData = [];
   //////
   let active = false;
