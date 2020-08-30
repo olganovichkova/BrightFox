@@ -27,7 +27,7 @@ const CurrentTime = ({ onTimeChange }) => {
   //   moment().format("s").substring(0, 1)
   // );
   const [prevTime, updatePrevTime] = useState(moment().format("hh"));
-  const [playing, toggle] = useAudio("music/sound1.mp3");
+  const [playing, toggle] = useAudio("music/ComputerSFX_alerts-061.mp3");
 
   useEffect(() => {
     let interval = setInterval(function () {

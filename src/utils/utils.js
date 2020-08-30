@@ -29,6 +29,9 @@ export const getNavBarData = (todayAppointments) => {
 
 export const getActiveTime = (navBarData) => {
   console.log("navBarData : ", navBarData);
+  if (navBarData.length === 0) {
+    return "";
+  }
   let now = moment().format("k");
   console.log("now : ", now);
   let minActiveTime = navBarData[0].time;

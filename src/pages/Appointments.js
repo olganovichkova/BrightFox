@@ -16,13 +16,6 @@ const API = process.env.REACT_APP_API || "http://localhost:8080";
 export default withAuth((props) => {
   const [init, updateInit] = useState(false);
   const [appointments, updateAppointments] = useState([]);
-  const [nextUrl] = useState(
-    `/appointments?start_gte=${moment()
-      .subtract(2, "day")
-      .format("YYYY-MM-DD")}&start_lte=${moment()
-      .add(2, "day")
-      .format("YYYY-MM-DD")}`
-  );
   const [navBarData, updateNavBarData] = useState([]);
   const [activeTime, updateActiveTime] = useState("");
 
@@ -33,13 +26,20 @@ export default withAuth((props) => {
         window.location.reload(true);
       }
       axios
-        .get(`${API}${nextUrl}`, {
-          headers: {
-            "content-type": "application/json",
-            accept: "application/json",
-            authorization: `Bearer ${token}`,
-          },
-        })
+        .get(
+          `${API}/appointments?start_gte=${moment()
+            .subtract(2, "day")
+            .format("YYYY-MM-DD")}&start_lte=${moment()
+            .add(2, "day")
+            .format("YYYY-MM-DD")}`,
+          {
+            headers: {
+              "content-type": "application/json",
+              accept: "application/json",
+              authorization: `Bearer ${token}`,
+            },
+          }
+        )
         .then((response) => {
           updateInit(true);
           if (response && response.data && response.data.length > 0) {
@@ -57,7 +57,7 @@ export default withAuth((props) => {
     if (!init) {
       fetchData();
     }
-  }, [nextUrl, props.auth, init]);
+  }, [props.auth, init]);
 
   const handleOnClick = (time) => {
     updateActiveTime(time);
