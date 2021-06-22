@@ -77,7 +77,14 @@ export default withAuth((props) => {
             </div>
             <div className="col-sm-4"></div>
             <div className="col-sm-4 time-text">
-              <CurrentTime onTimeChange={refresh} navBarData={navBarData} />
+              <CurrentTime
+                onTimeChange={refresh}
+                appointments={appointments.filter(
+                  (appointement) =>
+                    moment(appointement.start).format("k") === activeTime
+                )}
+                navBarData={navBarData}
+              />
             </div>
           </div>
 

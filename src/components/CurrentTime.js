@@ -21,7 +21,7 @@ const useAudio = (url) => {
   return [playing, toggle];
 };
 
-const CurrentTime = ({ onTimeChange }) => {
+const CurrentTime = ({ onTimeChange, appointments }) => {
   const [time, updateTime] = useState(moment().format("h:mm"));
   // const [prevTime, updatePrevTime] = useState(
   //   moment().format("s").substring(0, 1)
@@ -33,18 +33,33 @@ const CurrentTime = ({ onTimeChange }) => {
     let interval = setInterval(function () {
       updateTime(moment().format("h:mm"));
       // let curTime = moment().format("s").substring(0, 1);
+      let doAlarm = false;
+
+      for (let i = 0; i < appointments.length; i++) {
+        let minDiff = moment().diff(appointments[i].start, "minutes");
+        if (
+          minDiff < 1 &&
+          !appointments[i].alarmed &&
+          moment().isSameOrAfter(appointments[i].start)
+        ) {
+          doAlarm = true;
+          appointments[i].alarmed = true;
+        }
+      }
+      if (doAlarm) {
+        toggle();
+      }
       let curTime = moment().format("hh");
       if (prevTime !== curTime) {
         updatePrevTime(curTime);
         onTimeChange();
-        toggle();
         console.log("prevTime did not equal curTime");
       }
     }, 1000);
     return () => {
       clearInterval(interval);
     };
-  }, [prevTime, playing, toggle, onTimeChange]);
+  }, [prevTime, playing, toggle, onTimeChange, appointments]);
 
   return (
     <div>
