@@ -21,3 +21,6 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+//material-ui/core 4.12.3
+//material-ui/icons 4.11.2

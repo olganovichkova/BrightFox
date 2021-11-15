@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Typography } from "@material-ui/core";
 import axios from "axios";
-import { withAuth } from "@okta/okta-react";
 import moment from "moment";
 
 import CurrentTime from "../components/CurrentTime";
@@ -13,7 +12,7 @@ import logo from "../components/logo.png";
 //////
 const API = process.env.REACT_APP_API || "http://localhost:8080";
 
-export default withAuth((props) => {
+export default (props) => {
   const [init, updateInit] = useState(false);
   const [appointments, updateAppointments] = useState([]);
   const [navBarData, updateNavBarData] = useState([]);
@@ -21,10 +20,6 @@ export default withAuth((props) => {
 
   useEffect(() => {
     async function fetchData() {
-      let token = await props.auth.getAccessToken();
-      if (!token) {
-        window.location.reload(true);
-      }
       axios
         .get(
           `${API}/appointments?start_gte=${moment()
@@ -32,13 +27,6 @@ export default withAuth((props) => {
             .format("YYYY-MM-DD")}&start_lte=${moment()
             .add(2, "day")
             .format("YYYY-MM-DD")}`,
-          {
-            headers: {
-              "content-type": "application/json",
-              accept: "application/json",
-              authorization: `Bearer ${token}`,
-            },
-          }
         )
         .then((response) => {
           updateInit(true);
@@ -46,6 +34,10 @@ export default withAuth((props) => {
             let todayAppointments = response.data.filter(
               (appointment) =>
                 moment().format("D") === moment(appointment.start).format("D")
+            );
+            todayAppointments = todayAppointments.filter(
+              (todayAppointment) =>
+                !todayAppointment.location || (todayAppointment.location && todayAppointment.location.name != "Online")
             );
             let nbdata = getNavBarData(todayAppointments);
             updateNavBarData(nbdata);
@@ -57,7 +49,7 @@ export default withAuth((props) => {
     if (!init) {
       fetchData();
     }
-  }, [props.auth, init]);
+  }, [init]);
 
   const handleOnClick = (time) => {
     updateActiveTime(time);
@@ -117,4 +109,4 @@ export default withAuth((props) => {
       </div>
     </div>
   );
-});
+};
