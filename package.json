@@ -12,7 +12,7 @@
     "cors": "2.8.4",
     "dotenv": "8.1.0",
     "epilogue": "0.7.1",
-    "express": "4.16.3",
+    "express": "4.17.3",
     "lodash": "^4.17.19",
     "moment": "^2.27.0",
     "npm-run-all": "4.1.3",
